@@ -44,7 +44,7 @@ export default function(files = []) {
         }
 
       }).catch(err => {
-        new PluginError(PLUGIN_NAME, err);
+        this.emit('error', new PluginError(PLUGIN_NAME, err));
       });
 
     });

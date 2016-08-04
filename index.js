@@ -43,7 +43,7 @@ exports.default = function () {
           callback(null, file);
         }
       }).catch(function (err) {
-        new _gulpUtil.PluginError(PLUGIN_NAME, err);
+        _this.emit('error', new _gulpUtil.PluginError(PLUGIN_NAME, err));
       });
     });
   }(promise);
