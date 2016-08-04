@@ -28,7 +28,10 @@
   },
   "homepage": "https://github.com/jlenoble/gulp-error#readme",
   "dependencies": {
-    "gulp": "git://github.com/gulpjs/gulp.git#4.0"
+    "glob": "^7.0.5",
+    "gulp": "git://github.com/gulpjs/gulp.git#4.0",
+    "gulp-util": "^3.0.7",
+    "through2": "^2.0.1"
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.9.0",
