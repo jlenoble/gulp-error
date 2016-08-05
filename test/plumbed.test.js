@@ -39,13 +39,13 @@ describe('Test suite for Gulp plugin gulp-error:', () => {
   }));
 
   it('gulp-error with file arg throws on that file', testArgCallback({
-    arg: 'test/gulp-error.test.js',
-    match: /.*Error.*Intentional error when processing.*test\/gulp-error\.test\.js.*/
+    arg: 'test/plumbed.test.js',
+    match: /.*Error.*Intentional error when processing.*test\/plumbed\.test\.js.*/
   }));
 
   it('gulp-error with filelist arg throws on first file matched',
   testArgCallback({
-    arg: ['test/gulp-error.test.js', 'src/gulp-error.js'],
+    arg: ['test/plumbed.test.js', 'src/gulp-error.js'],
     match: /.*Error.*Intentional error when processing.*src\/gulp-error\.js.*/
   }));
 
