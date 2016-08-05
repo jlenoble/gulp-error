@@ -7,6 +7,21 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = function () {
   var files = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
 
+  var ErrorType = Error;
+  var message = 'Intentional error when processing file';
+
+  if (files && files.files) {
+    if (files.ErrorType) {
+      ErrorType = files.ErrorType;
+    }
+
+    if (files.message) {
+      message = files.message;
+    }
+
+    files = files.files; // Must be last!
+  }
+
   if (files === undefined) {
     files = [];
   } else if (typeof files === 'string') {
@@ -27,26 +42,23 @@ exports.default = function () {
     });
   }) : Promise.resolve(files);
 
-  return function (promise) {
+  return _through2.default.obj(function (file, encoding, callback) {
+    var _this = this;
 
-    return _through2.default.obj(function (file, encoding, callback) {
-      var _this = this;
+    var relative = _path2.default.relative(process.cwd(), file.path);
 
-      var relative = _path2.default.relative(process.cwd(), file.path);
+    promise.then(function (_files) {
+      if (_files.length === 0 || _files.includes(relative)) {
 
-      promise.then(function (_files) {
-        if (_files.length === 0 || _files.includes(relative)) {
+        _this.emit('error', new _gulpUtil.PluginError(PLUGIN_NAME, new ErrorType(message + ' ' + relative)));
+      } else {
 
-          _this.emit('error', new _gulpUtil.PluginError(PLUGIN_NAME, 'Intentional error when processing file ' + relative));
-        } else {
-
-          callback(null, file);
-        }
-      }).catch(function (err) {
-        _this.emit('error', new _gulpUtil.PluginError(PLUGIN_NAME, err));
-      });
+        callback(null, file);
+      }
+    }).catch(function (err) {
+      _this.emit('error', new _gulpUtil.PluginError(PLUGIN_NAME, err));
     });
-  }(promise);
+  });
 };
 
 var _gulpUtil = require('gulp-util');
