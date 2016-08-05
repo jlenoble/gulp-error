@@ -9,7 +9,7 @@ import del from 'del';
 import path from 'path';
 
 const originalSrc = gulp.src;
-gulp.src = function() {
+const plumbedSrc = function() {
   return originalSrc.apply(gulp, arguments)
     .pipe(plumber({
       errorHandler: function(err) {
@@ -18,6 +18,16 @@ gulp.src = function() {
       }
     }));
 };
+
+plumbedSrc.originalSrc = originalSrc;
+plumbedSrc.plumb = function() {
+  gulp.src = plumbedSrc;
+};
+plumbedSrc.unplumb = function() {
+  gulp.src = originalSrc;
+};
+
+plumbedSrc.plumb();
 
 const buildDir = 'build';
 const srcGlob = 'src/gulp-error.js';
