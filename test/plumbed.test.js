@@ -7,7 +7,7 @@ import chai, {expect} from 'chai';
 
 const glob = ['gulpfile.babel.js', 'src/*.js', 'test/*.js'];
 
-describe('Test suite for Gulp plugin gulp-error:', () => {
+describe('Test suite for Gulp plugin gulp-error (gulp is plumbed):', () => {
 
   beforeEach(function() {
     this.error = Muter(console, 'error');
@@ -18,7 +18,17 @@ describe('Test suite for Gulp plugin gulp-error:', () => {
     return function() {
       return new Promise((resolve, reject) => {
         gulp.src(glob).pipe(error(options.arg))
-          .on('error', () => {
+          .on('error', err => {
+            const str = err.toString();
+
+            if (str.match(/AssertionError.*in.*plugin.*gulp-error/)) {
+              // Then the test below failed and an assertion error was
+              // thrown and caught by plugin; Reject to prevent the test
+              // from hanging unnecessarily; The .*'s in the pattern take care
+              // of the potential color codes in the formatted error string.
+              reject(err);
+            }
+
             const logs = this.error.getLogs();
 
             expect(logs).to.match(options.match);
@@ -58,6 +68,16 @@ describe('Test suite for Gulp plugin gulp-error:', () => {
   testArgCallback({
     arg: ['test/**/*.js', 'src/**/*.js'],
     match: /.*Error.*Intentional error when processing.*src\/gulp-error\.js.*/
+  }));
+
+  it('gulp-error with options arg throws specific errors',
+  testArgCallback({
+    arg: {
+      files: 'src/gulp-error.js',
+      ErrorType: TypeError,
+      message: 'Controlled type error'
+    },
+    match: /.*Error.*Controlled type error.*src\/gulp-error\.js.*/
   }));
 
   afterEach(function() {

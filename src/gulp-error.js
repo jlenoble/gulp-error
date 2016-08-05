@@ -6,6 +6,21 @@ import globAll from 'glob-all';
 const PLUGIN_NAME = 'gulp-error';
 
 export default function(files = []) {
+  var ErrorType = Error;
+  var message = 'Intentional error when processing file';
+
+  if (files && files.files) {
+    if (files.ErrorType) {
+      ErrorType = files.ErrorType;
+    }
+
+    if (files.message) {
+      message = files.message;
+    }
+
+    files = files.files; // Must be last!
+  }
+
   if (files === undefined) {
     files = [];
   } else if (typeof files === 'string') {
@@ -26,29 +41,25 @@ export default function(files = []) {
     });
   }) : Promise.resolve(files);
 
-  return (function(promise) {
+  return through.obj(function(file, encoding, callback) {
+    const relative =  path.relative(process.cwd(), file.path);
 
-    return through.obj(function(file, encoding, callback) {
-      const relative =  path.relative(process.cwd(), file.path);
+    promise.then(_files => {
+      if (_files.length === 0 || _files.includes(relative)) {
 
-      promise.then(_files => {
-        if (_files.length === 0 || _files.includes(relative)) {
+        this.emit('error', new PluginError(PLUGIN_NAME,
+          new ErrorType(`${message} ${relative}`)));
 
-          this.emit('error', new PluginError(PLUGIN_NAME,
-            `Intentional error when processing file ${relative}`));
+      } else {
 
-        } else {
+        callback(null, file);
 
-          callback(null, file);
+      }
 
-        }
-
-      }).catch(err => {
-        this.emit('error', new PluginError(PLUGIN_NAME, err));
-      });
-
+    }).catch(err => {
+      this.emit('error', new PluginError(PLUGIN_NAME, err));
     });
 
-  })(promise);
+  });
 
 }

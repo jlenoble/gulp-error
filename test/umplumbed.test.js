@@ -7,7 +7,7 @@ import chai, {expect} from 'chai';
 
 const glob = ['gulpfile.babel.js', 'src/*.js', 'test/*.js'];
 
-describe('Test suite for Gulp plugin gulp-error:', () => {
+describe('Test suite for Gulp plugin gulp-error (gulp is not plumbed):', () => {
 
   beforeEach(function() {
     if (gulp.src.originalSrc) {
@@ -67,6 +67,16 @@ describe('Test suite for Gulp plugin gulp-error:', () => {
   testArgCallback({
     arg: ['test/**/*.js', 'src/**/*.js'],
     match: /.*Intentional error when processing.*src\/gulp-error\.js.*/
+  }));
+
+  it('gulp-error with options arg throws specific errors',
+  testArgCallback({
+    arg: {
+      files: 'src/gulp-error.js',
+      ErrorType: TypeError,
+      message: 'Controlled type error'
+    },
+    match: /.*Controlled type error.*src\/gulp-error\.js.*/
   }));
 
   afterEach(function() {
