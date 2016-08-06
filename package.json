@@ -1,6 +1,6 @@
 {
   "name": "gulp-error",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Helps testing streams by throwing controlled errors on specific files",
   "main": "index.js",
   "scripts": {
