@@ -78,3 +78,5 @@ var _globAll2 = _interopRequireDefault(_globAll);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var PLUGIN_NAME = 'gulp-error';
+
+module.exports = exports['default'];
