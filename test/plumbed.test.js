@@ -29,10 +29,18 @@ describe('Test suite for Gulp plugin gulp-error (gulp is plumbed):', () => {
               reject(err);
             }
 
-            const logs = this.error.getLogs();
+            try {
 
-            expect(logs).to.match(options.match);
-            expect(console.error.callCount).to.equal(1);
+              const logs = this.error.getLogs();
+
+              expect(logs).to.match(options.match);
+              expect(console.error.callCount).to.equal(1);
+
+            } catch (err) {
+
+              reject(err);
+
+            }
 
             resolve();
           })
@@ -46,6 +54,11 @@ describe('Test suite for Gulp plugin gulp-error (gulp is plumbed):', () => {
 
   it('gulp-error with no arg throws on first file passed', testArgCallback({
     match: /.*Error.*Intentional error when processing.*gulpfile\.babel\.js.*/
+  }));
+
+  it('gulp-error with bad arg throws unintentionally', testArgCallback({
+    arg: 'test/dummy.js',
+    match: /.*Error.*test\/dummy\.js.*is.*no.*valid.*glob.*/
   }));
 
   it('gulp-error with file arg throws on that file', testArgCallback({

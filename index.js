@@ -38,6 +38,10 @@ exports.default = function () {
         reject(err);
       }
 
+      if (!_files.length) {
+        reject(new Error(files + ' is no valid glob'));
+      }
+
       resolve(_files);
     });
   }) : Promise.resolve(files);
@@ -55,7 +59,9 @@ exports.default = function () {
 
         callback(null, file);
       }
-    }).catch(function (err) {
+    });
+
+    promise.catch(function (err) {
       _this.emit('error', new _gulpUtil.PluginError(PLUGIN_NAME, err));
     });
   });

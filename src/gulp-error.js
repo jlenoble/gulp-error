@@ -37,6 +37,10 @@ export default function(files = []) {
         reject(err);
       }
 
+      if (!_files.length) {
+        reject(new Error(`${files} is no valid glob`));
+      }
+
       resolve(_files);
     });
   }) : Promise.resolve(files);
@@ -56,7 +60,9 @@ export default function(files = []) {
 
       }
 
-    }).catch(err => {
+    });
+
+    promise.catch(err => {
       this.emit('error', new PluginError(PLUGIN_NAME, err));
     });
 
