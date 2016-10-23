@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function () {
-  var files = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
+  var files = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
 
   var ErrorType = Error;
   var message = 'Intentional error when processing file';

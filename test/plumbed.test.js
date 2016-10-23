@@ -38,7 +38,21 @@ describe('Test suite for Gulp plugin gulp-error (gulp is plumbed):', () => {
 
             } catch (err) {
 
-              reject(err);
+              if (str.match(/.*test\/dummy\.js.*is.*no.*valid.*glob.*/)) {
+                // Somewhere between Node6.3 and Node6.7, warnings were
+                // added when promise rejection are uncaught, making the
+                // 'unintentional' error fail because of extra logs by
+                // console.error; the following tweak recovers from that.
+                console.error.getCalls().forEach(call => {
+                  call = call.args[0].toString();
+                  if (!call.match(/.*test\/dummy\.js.*is.*no.*valid.*glob.*/)
+                     && !call.match(/.*node:\d+.*PromiseRejection.*/)) {
+                    reject(err);
+                  }
+                });
+              } else {
+                reject(err);
+              }
 
             }
 

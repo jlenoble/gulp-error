@@ -10,6 +10,8 @@ const glob = ['gulpfile.babel.js', 'src/*.js', 'test/*.js'];
 describe('Test suite for Gulp plugin gulp-error (gulp is not plumbed):', () => {
 
   beforeEach(function() {
+    this.error = Muter(console, 'error');
+    this.error.mute();
     if (gulp.src.originalSrc) {
       this.plumbedSrc = gulp.src;
       this.plumbedSrc.unplumb();
@@ -89,6 +91,7 @@ describe('Test suite for Gulp plugin gulp-error (gulp is not plumbed):', () => {
   }));
 
   afterEach(function() {
+    this.error.unmute();
     if (this.plumbedSrc) {
       this.plumbedSrc.plumb();
     }
